@@ -1,6 +1,6 @@
 extends GutTest
 
-var PlayerScene = preload("res://scenes/player.tscn")
+var PlayerScene = preload("res://src/entities/player/player.tscn")
 var player
 
 func before_each():
