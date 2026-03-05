@@ -1,10 +1,19 @@
-[gd_scene load_steps=22 format=3 uid="uid://b8j4k5l6m7n8"]
+[gd_scene load_steps=25 format=3 uid="uid://b8j4k5l6m7n8"]
 
 [ext_resource type="Script" uid="uid://bv3fho07tec4x" path="res://src/entities/player/player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://c766xekp04dcb" path="res://assets/textures/player/Dash.png" id="5_dash"]
 [ext_resource type="Texture2D" uid="uid://6rdgig1x4pa8" path="res://assets/textures/player/Jump.png" id="5_tuyoq"]
 [ext_resource type="Texture2D" uid="uid://bsebf0aovdcyw" path="res://assets/textures/player/Attacco.png" id="6_attack"]
 [ext_resource type="Texture2D" uid="uid://kga40fpofwh4" path="res://assets/textures/player/walk.png" id="6_fjrip"]
+[ext_resource type="Texture2D" uid="uid://b88vhrhol84y5" path="res://assets/textures/player/Idle.png" id="7_idle"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_0"]
+atlas = ExtResource("7_idle")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_1"]
+atlas = ExtResource("7_idle")
+region = Rect2(32, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_qlg0r"]
 atlas = ExtResource("6_attack")
@@ -89,7 +98,13 @@ animations = [{
 "name": &"dash",
 "speed": 10.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_1")
+}],
 "loop": true,
 "name": &"idle",
 "speed": 2.0

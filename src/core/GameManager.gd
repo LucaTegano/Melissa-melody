@@ -1,47 +1,48 @@
 extends Node
+## Manager globale per lo stato del gioco e il sistema di salvataggio.
+##
+## Gestisce il caricamento delle scene e la persistenza dei dati del giocatore.
 
+# === Costanti ===
+const SAVE_PATH: String = "user://savegame.tres"
 
-const SAVE_PATH = "user://savegame.save"
+# === Variabili Pubbliche ===
+var player_position: Vector2 = Vector2.ZERO
 
+# === Metodi Pubblici ===
 
-var player_position = Vector2.ZERO
-var current_scene = ""
-
-func save_game(player_node):
-
-	var data = {
-		"filename": player_node.get_tree().current_scene.scene_file_path, # Quale livello è?
-		"pos_x": player_node.global_position.x, # Dove si trova Mel?
-		"pos_y": player_node.global_position.y
-	}
+## Salva lo stato attuale del gioco nel file di sistema.
+func save_game(player_node: CharacterBody2D) -> void:
+	var save_data := SaveData.new()
+	save_data.scene_path = player_node.get_tree().current_scene.scene_file_path # Quale livello è?
+	save_data.player_position = player_node.global_position # Dove si trova Mel?
 	
-	# Apriamo il file in modalità SCRITTURA 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-	
-	# Trasformiamo i dati in testo JSON e salviamo
-	var json_string = JSON.stringify(data)
-	file.store_line(json_string)
-	
-	print("Gioco Salvato!")
+	# Apriamo/salviamo il file (nuovo metodo backend)
+	var error := ResourceSaver.save(save_data, SAVE_PATH)
+	if error == OK:
+		print("Gioco Salvato con successo in %s!" % SAVE_PATH)
+	else:
+		printerr("Errore durante il salvataggio: ", error)
 
-func load_game():
+## Carica lo stato del gioco dal file di sistema e cambia scena.
+func load_game() -> void:
 	# Controlliamo se il file esiste
-	if not FileAccess.file_exists(SAVE_PATH):
-		print("Nessun salvataggio trovato!")
+	if not ResourceLoader.exists(SAVE_PATH):
+		print("Nessun salvataggio trovato in %s!" % SAVE_PATH)
 		return # Non fare nulla
-	
-	# Apriamo il file in modalità LETTURA 
-	var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
-	var json_string = file.get_line()
-	
-	
-	var json = JSON.new()
-	var parse_result = json.parse(json_string)
-	var data = json.get_data()
-	
+
+	# Leggiamo il file di salvataggio
+	var save_data := ResourceLoader.load(SAVE_PATH) as SaveData
+	if not save_data:
+		printerr("Errore nel caricamento del file di salvataggio!")
+		return
 	
 	# Prima memorizziamo i dati in variabili temporanee nel GameManager
-	player_position = Vector2(data["pos_x"], data["pos_y"])
+	player_position = save_data.player_position
 	
 	# Cambiamo scena verso quella salvata
-	get_tree().change_scene_to_file(data["filename"])
+	var error := get_tree().change_scene_to_file(save_data.scene_path)
+	if error != OK:
+		printerr("Errore nel cambio scena: ", error)
+	else:
+		print("Caricamento completato. Scena: ", save_data.scene_path)

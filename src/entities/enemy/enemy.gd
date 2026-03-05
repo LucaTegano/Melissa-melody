@@ -1,48 +1,63 @@
 extends CharacterBody2D
+class_name Enemy
+## Nemico base che pattuglia tra i muri e subisce knockback.
 
+# === Segnali ===
+signal damaged(amount: float)
+
+# === Export: Movimento ===
+@export_group("Movimento")
 @export var speed: float = 60.0
 @export var gravity: float = 900.0
+@export var knockback_friction: float = 1200.0
 
-var direction = 1 
-var knockback = Vector2.ZERO # Variabile per la spinta
+# === Variabili di Stato ===
+var direction: int = 1 
+var knockback: Vector2 = Vector2.ZERO # Variabile per la spinta del knockback
 
-@onready var sprite = $AnimatedSprite2D
+# === Node References ===
+@onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 
-func _ready():
-	if sprite:
-		sprite.play("walk")
+# === lifecycle ===
 
-func _physics_process(delta):
-	# 1. Gravità
-	if not is_on_floor():
-		velocity.y += gravity * delta
+func _ready() -> void:
+    add_to_group("enemies")
+    if sprite:
+        sprite.play("walk")
 
-	# movimento e knockback
-	if knockback != Vector2.ZERO:
-		
-		velocity = knockback
-		
-		knockback = knockback.move_toward(Vector2.ZERO, 1200 * delta)
-	else:
-		# Comportamento normale
-		if is_on_wall():
-			direction = direction * -1
-			if sprite:
-				sprite.flip_h = (direction < 0)
-		
-		velocity.x = direction * speed
-	
-	move_and_slide()
+func _physics_process(delta: float) -> void:
+    # 1. Gravità
+    _apply_gravity(delta)
+    # Movimento e Knockback
+    _handle_movement(delta)
+    move_and_slide()
 
-# prendere danno
-func take_damage(source_position: Vector2, force: float):
-	print("palla colpita")
-	
+# === Public Methods ===
 
-	
-	var dir_x = 1 if global_position.x > source_position.x else -1
-	
-	
-	knockback = Vector2(dir_x * force, 0)
-	
-	
+# Prendere Danno
+## Applica danno e knockback al nemico.
+func take_damage(source_position: Vector2, force: float) -> void:
+    print("Nemico colpito!")
+    var dir_x := 1 if global_position.x > source_position.x else -1
+    knockback = Vector2(dir_x * force, 0)
+    damaged.emit(force)
+
+# === Private Methods ===
+
+func _apply_gravity(delta: float) -> void:
+    if not is_on_floor():
+        velocity.y += gravity * delta
+
+func _handle_movement(delta: float) -> void:
+    # Movimento guidato dal Knockback
+    if knockback != Vector2.ZERO:
+        velocity = knockback
+        knockback = knockback.move_toward(Vector2.ZERO, knockback_friction * delta)
+    else:
+        # Comportamento normale (Pattugliamento)
+        if is_on_wall():
+            direction *= -1
+            if sprite:
+                sprite.flip_h = (direction < 0)
+        
+        velocity.x = direction * speed

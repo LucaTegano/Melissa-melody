@@ -49,7 +49,7 @@ func test_dash_integration():
 	Input.parse_input_event(event_release)
 	
 	# Wait for dash duration
-	await wait_seconds(player.DASH_DURATION + 0.1)
+	await wait_seconds(player.dash_duration + 0.1)
 	
 	assert_false(player.is_dashing, "Player should exit dash state")
 	
