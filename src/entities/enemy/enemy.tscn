@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bccmu8toxvouk" path="res://assets/textures/enemy/Nemico 1.png" id="1_7p1mj"]
 [ext_resource type="Script" uid="uid://b1daa48v55edy" path="res://src/entities/enemy/enemy.gd" id="1_md0e3"]
+[ext_resource type="Script" path="res://src/shared/components/health_component.gd" id="2_health"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2brh"]
 radius = 8.0
@@ -76,5 +77,9 @@ animation = &"walk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
 shape = SubResource("CircleShape2D_md0e3")
 debug_color = Color(0.9999997, 0.009749221, 0.06345241, 0.41960785)
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_health = 2
 
 [connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]

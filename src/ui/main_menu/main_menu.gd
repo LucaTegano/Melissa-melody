@@ -3,7 +3,7 @@ class_name MainMenu
 ## Schermata dei titoli del gioco.
 
 # === Export ===
-@export_file("*.tscn") var first_level_path: String = "res://src/levels/test_level.tscn"
+@export_file("*.tscn") var first_level_path: String = "res://src/levels/level_01.tscn"
 
 # === Node References ===
 @onready var btn_new_game: Button = $VBoxContainer/BtnNewGame

@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://f1e2n3i4s5h6"]
+
+[ext_resource type="Script" path="res://src/shared/finish_area/finish_area.gd" id="1_finish"]
+[ext_resource type="Texture2D" uid="uid://b3mlsqehv0i70" path="res://assets/textures/ui/icon.svg" id="2_icon"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_finish"]
+size = Vector2(64, 64)
+
+[node name="FinishArea" type="Area2D"]
+script = ExtResource("1_finish")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_icon")
+modulate = Color(1, 1, 0, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_finish")

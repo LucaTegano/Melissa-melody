@@ -1,0 +1,150 @@
+[gd_scene load_steps=10 format=3 uid="uid://c7k5m6l8n9p1"]
+
+[ext_resource type="PackedScene" uid="uid://b8j4k5l6m7n8" path="res://src/entities/player/player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://i7iqkfrk2335" path="res://src/entities/enemy/enemy.tscn" id="2_enemy"]
+[ext_resource type="PackedScene" uid="uid://30rbxj5j8bhq" path="res://src/shared/save_area/save_area.tscn" id="3_save"]
+[ext_resource type="PackedScene" uid="uid://c6u7v8w9x0y1" path="res://src/ui/hud/hud.tscn" id="4_hud"]
+[ext_resource type="PackedScene" uid="uid://b1n2o3m4n5k6" path="res://src/shared/collectibles/music_note.tscn" id="5_note"]
+[ext_resource type="PackedScene" uid="uid://s1p2i3k4e5h6" path="res://src/shared/hazards/spike.tscn" id="6_spike"]
+[ext_resource type="PackedScene" uid="uid://f1e2n3i4s5h6" path="res://src/shared/finish_area/finish_area.tscn" id="7_finish"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(200, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(2500, 40)
+
+[node name="Level01" type="Node2D"]
+
+[node name="HUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.12, 0.12, 0.15, 1)
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Ground" type="StaticBody2D" parent="World"]
+position = Vector2(1000, 600)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Ground"]
+shape = SubResource("RectangleShape2D_ground")
+
+[node name="ColorRect" type="ColorRect" parent="World/Ground"]
+offset_left = -1250.0
+offset_top = -20.0
+offset_right = 1250.0
+offset_bottom = 20.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="Platform1" type="StaticBody2D" parent="World"]
+position = Vector2(400, 550)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform1"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="ColorRect" type="ColorRect" parent="World/Platform1"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.3, 0.3, 0.4, 1)
+
+[node name="Platform2" type="StaticBody2D" parent="World"]
+position = Vector2(650, 500)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform2"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="ColorRect" type="ColorRect" parent="World/Platform2"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.3, 0.3, 0.4, 1)
+
+[node name="Platform3" type="StaticBody2D" parent="World"]
+position = Vector2(900, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/Platform3"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="ColorRect" type="ColorRect" parent="World/Platform3"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.3, 0.3, 0.4, 1)
+
+[node name="PlatformHigh" type="StaticBody2D" parent="World"]
+position = Vector2(1150, 490)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="World/PlatformHigh"]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="ColorRect" type="ColorRect" parent="World/PlatformHigh"]
+offset_left = -100.0
+offset_top = -10.0
+offset_right = 100.0
+offset_bottom = 10.0
+color = Color(0.5, 0.2, 0.2, 1)
+
+[node name="Entities" type="Node2D" parent="."]
+
+[node name="Player" parent="Entities" instance=ExtResource("1_player")]
+position = Vector2(150, 550)
+
+[node name="Enemy1" parent="Entities" instance=ExtResource("2_enemy")]
+position = Vector2(600, 570)
+respawn_time = 4.0
+
+[node name="Enemy2" parent="Entities" instance=ExtResource("2_enemy")]
+position = Vector2(900, 520)
+speed = 120.0
+
+[node name="Enemy3" parent="Entities" instance=ExtResource("2_enemy")]
+position = Vector2(1400, 570)
+
+[node name="SaveArea" parent="Entities" instance=ExtResource("3_save")]
+position = Vector2(1150, 460)
+scale = Vector2(0.3, 0.3)
+
+[node name="MusicNotes" type="Node2D" parent="Entities"]
+
+[node name="MusicNote" parent="Entities/MusicNotes" instance=ExtResource("5_note")]
+position = Vector2(400, 510)
+
+[node name="MusicNote2" parent="Entities/MusicNotes" instance=ExtResource("5_note")]
+position = Vector2(650, 460)
+
+[node name="MusicNote3" parent="Entities/MusicNotes" instance=ExtResource("5_note")]
+position = Vector2(900, 500)
+
+[node name="Hazards" type="Node2D" parent="Entities"]
+
+[node name="Spike" parent="Entities/Hazards" instance=ExtResource("6_spike")]
+position = Vector2(800, 580)
+
+[node name="Spike2" parent="Entities/Hazards" instance=ExtResource("6_spike")]
+position = Vector2(832, 580)
+
+[node name="FinishArea" parent="Entities" instance=ExtResource("7_finish")]
+position = Vector2(1500, 540)
+next_level_path = "res://src/levels/level_02.tscn"
+
+[node name="TutorialLabel" type="Label" parent="."]
+offset_left = 50.0
+offset_top = 450.0
+offset_right = 350.0
+offset_bottom = 530.0
+text = "BENVENUTA MEL!
+Colleziona le note e
+raggiungi il portale giallo."
+horizontal_alignment = 1

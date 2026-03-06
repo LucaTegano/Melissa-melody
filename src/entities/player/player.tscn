@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bsebf0aovdcyw" path="res://assets/textures/player/Attacco.png" id="6_attack"]
 [ext_resource type="Texture2D" uid="uid://kga40fpofwh4" path="res://assets/textures/player/walk.png" id="6_fjrip"]
 [ext_resource type="Texture2D" uid="uid://b88vhrhol84y5" path="res://assets/textures/player/Idle.png" id="7_idle"]
+[ext_resource type="Script" path="res://src/shared/components/health_component.gd" id="8_health"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_idle_0"]
 atlas = ExtResource("7_idle")
@@ -174,5 +175,9 @@ monitoring = false
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="weaponarea"]
 position = Vector2(1, 0)
 polygon = PackedVector2Array(9, -19, 18, -19, 28, -12, 30, -5, 30, 5, 25, 15, 12, 16, 9, 16, 3, 16, 3, -19)
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("8_health")
+invulnerability_duration = 1.0
 
 [connection signal="body_entered" from="weaponarea" to="." method="_on_weaponarea_body_entered"]

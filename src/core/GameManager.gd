@@ -1,48 +1,93 @@
 extends Node
-## Manager globale per lo stato del gioco e il sistema di salvataggio.
+## Global game state manager and persistence system.
 ##
-## Gestisce il caricamento delle scene e la persistenza dei dati del giocatore.
+## Coordinates between EventBus signals and persistent storage.
 
-# === Costanti ===
+# === Configuration ===
 const SAVE_PATH: String = "user://savegame.tres"
 
-# === Variabili Pubbliche ===
+# === Global State ===
 var player_position: Vector2 = Vector2.ZERO
+var player_score: int = 0:
+    set(value):
+        _player_score = value
+        EventBus.score_changed.emit(_player_score)
+    get:
+        return _player_score
 
-# === Metodi Pubblici ===
+var player_health: int = 3:
+    set(value):
+        _player_health = value
+        EventBus.player_health_changed.emit(_player_health, 3)
+    get:
+        return _player_health
 
-## Salva lo stato attuale del gioco nel file di sistema.
-func save_game(player_node: CharacterBody2D) -> void:
-	var save_data := SaveData.new()
-	save_data.scene_path = player_node.get_tree().current_scene.scene_file_path # Quale livello è?
-	save_data.player_position = player_node.global_position # Dove si trova Mel?
-	
-	# Apriamo/salviamo il file (nuovo metodo backend)
-	var error := ResourceSaver.save(save_data, SAVE_PATH)
-	if error == OK:
-		print("Gioco Salvato con successo in %s!" % SAVE_PATH)
-	else:
-		printerr("Errore durante il salvataggio: ", error)
+# === Private State ===
+var _player_score: int = 0
+var _player_health: int = 3
 
-## Carica lo stato del gioco dal file di sistema e cambia scena.
-func load_game() -> void:
-	# Controlliamo se il file esiste
-	if not ResourceLoader.exists(SAVE_PATH):
-		print("Nessun salvataggio trovato in %s!" % SAVE_PATH)
-		return # Non fare nulla
+# === Lifecycle ===
 
-	# Leggiamo il file di salvataggio
-	var save_data := ResourceLoader.load(SAVE_PATH) as SaveData
-	if not save_data:
-		printerr("Errore nel caricamento del file di salvataggio!")
-		return
-	
-	# Prima memorizziamo i dati in variabili temporanee nel GameManager
-	player_position = save_data.player_position
-	
-	# Cambiamo scena verso quella salvata
-	var error := get_tree().change_scene_to_file(save_data.scene_path)
-	if error != OK:
-		printerr("Errore nel cambio scena: ", error)
-	else:
-		print("Caricamento completato. Scena: ", save_data.scene_path)
+func _ready() -> void:
+    process_mode = Node.PROCESS_MODE_ALWAYS
+
+# === Public API ===
+
+## Saves the current game state to file.
+func save_game(player: Player) -> void:
+    var save_data := SaveData.new()
+    save_data.scene_path = player.get_tree().current_scene.scene_file_path
+    save_data.player_position = player.global_position
+    save_data.score = player_score
+    save_data.current_health = player.health_component.current_health
+    
+    var error := ResourceSaver.save(save_data, SAVE_PATH)
+    if error == OK:
+        print("[GameManager] Game saved successfully.")
+        EventBus.game_saved.emit()
+    else:
+        printerr("[GameManager] Failed to save game: ", error)
+
+## Loads the game state and transitions to the saved level.
+func load_game(force_full_health: bool = false) -> void:
+    if not ResourceLoader.exists(SAVE_PATH):
+        print("[GameManager] No save file found.")
+        return
+
+    var save_data := ResourceLoader.load(SAVE_PATH) as SaveData
+    if not save_data:
+        printerr("[GameManager] Error loading save data resource.")
+        return
+    
+    # Restore data
+    player_position = save_data.player_position
+    player_score = save_data.score
+    
+    if force_full_health:
+        player_health = 3
+    else:
+        player_health = save_data.current_health
+    
+    # Safety check
+    if player_health <= 0:
+        player_health = 3
+    
+    if get_tree().change_scene_to_file(save_data.scene_path) == OK:
+        print("[GameManager] Level loaded: ", save_data.scene_path)
+        EventBus.game_loaded.emit()
+    else:
+        printerr("[GameManager] Failed to change scene.")
+
+## Resets health and reloads from checkpoint or scene start.
+func respawn_player() -> void:
+    print("[GameManager] Respawning player...")
+    # Use load_game with forced full health if a save exists
+    if ResourceLoader.exists(SAVE_PATH):
+        load_game(true)
+    else:
+        player_health = 3
+        player_score = 0
+        get_tree().reload_current_scene()
+
+func add_score(amount: int) -> void:
+    player_score += amount

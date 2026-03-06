@@ -6,7 +6,7 @@
 
 - **Repository**: [LucaTegano/Melissa-melody](https://github.com/LucaTegano/Melissa-melody)
 - **Branch principale**: `main`
-- **Branch di sviluppo**: push **sempre** su `dev`. Push su `main` **solo se esplicitamente richiesto**.
+  Push su `main` ** sempre**.
 - **Renderer**: Forward Plus
 
 ---
@@ -79,13 +79,16 @@
 
 ## Input Map
 
-| Azione       | Tasto                    |
-| ------------ | ------------------------ |
-| `move_left`  | `A` / `←`                |
-| `move_right` | `D` / `→`                |
-| `jump`       | `Spazio`                 |
-| `dash`       | `Shift` (destro)         |
-| `attack`     | `Click sinistro` (mouse) |
+| Azione       | Tasto                     | Note                                  |
+| ------------ | ------------------------- | ------------------------------------- |
+| `move_left`  | `A` / `←`                 |                                       |
+| `move_right` | `D` / `→`                 |                                       |
+| `move_up`    | `W` / `↑`                 | **Saltare** / Scala (futuro)          |
+| `move_down`  | `S` / `↓`                 | **Scendere veloce** / Scendi (futuro) |
+| `jump`       | `Spazio` / `W`            |                                       |
+| `dash`       | `Shift` (destro/sinistro) |                                       |
+| `attack`     | `Click sinistro` (mouse)  |                                       |
+| `interact`   | `W` / `↑` / `E`           | Interazione (es. salvataggio)         |
 
 ---
 
@@ -129,7 +132,7 @@ Le build vanno salvate in `builds/` (esclusa da Git).
 
 ## Regole di Git e Rilascio
 
-1. **Push su `dev`** sempre. Push su `main` **solo** su richiesta esplicita.
+1. \*\* Push su `main` sempre.
 2. **Build naming**: `TeamHarmony_[Stato]_[Versione]_[Data].zip` (es. `TeamHarmony_Alpha_v0-1-0_2026-03-05.zip`)
 3. **Versioning**: Semantico con trattini (`v0-1-0` anziché `v0.1.0`) per compatibilità nomi file.
 4. **`builds/`** è nella `.gitignore` — non committare mai i binari.

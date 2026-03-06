@@ -6,3 +6,5 @@ extends Resource
 
 @export var scene_path: String = ""
 @export var player_position: Vector2 = Vector2.ZERO
+@export var score: int = 0
+@export var current_health: int = 3
